@@ -1,5 +1,5 @@
 {% set name = "ngram" %}
-{% set version = "1.3.10" %}
+{% set version = "1.3.11" %}
 
 package: 
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: http://www.openfst.org/twiki/pub/GRM/NGramDownload/{{ name }}-{{ version }}.tar.gz
-  sha256: 05430cc293796968ebce9117d562b842ef6161a8d4348a31e65e1fefaa700990
+  sha256: 05d417b57751dc7eca43b13d5f50eebe9d2338851bc47a854bb9318b91649773
   
 build:
   number: 0
@@ -18,9 +18,9 @@ requirements:
     - {{ compiler('cxx') }}
     - make
   host:
-    - openfst ==1.7.7
+    - openfst ==1.7.8
   run:
-    - openfst ==1.7.7
+    - openfst ==1.7.8
 
 test:
   commands:
