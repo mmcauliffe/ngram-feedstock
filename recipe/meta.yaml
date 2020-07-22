@@ -10,7 +10,7 @@ source:
   sha256: 05d417b57751dc7eca43b13d5f50eebe9d2338851bc47a854bb9318b91649773
   
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
 
 requirements:
@@ -18,9 +18,9 @@ requirements:
     - {{ compiler('cxx') }}
     - make
   host:
-    - openfst ==1.7.8
+    - openfst =>1.7.8
   run:
-    - openfst ==1.7.8
+    - openfst =>1.7.8
 
 test:
   commands:
