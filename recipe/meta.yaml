@@ -33,7 +33,7 @@ test:
 about:
   home: http://ngram.opengrm.org
   license: Apache-2.0
-  license_file: COPYING
+  license_file: LICENSE
   summary: N-Gram modeling
   description: |
     A library for making and modifying n-gram language models encoded as weighted finite-state transducers (FSTs).
