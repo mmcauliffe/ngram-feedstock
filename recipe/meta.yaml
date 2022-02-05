@@ -10,13 +10,14 @@ source:
   sha256: 8af30f0f2e823ccd7b856093a0b395cd481c599884b76a6361e8b37812d89d87
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
 
 requirements:
   build:
     - {{ compiler('cxx') }}
     - make
+    - gnuconfig   # [unix]
   host:
     - openfst ==1.8.2
   run:
