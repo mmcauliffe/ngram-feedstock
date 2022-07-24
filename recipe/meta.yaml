@@ -31,7 +31,9 @@ requirements:
 
 
 {% set ngram_binaries = [
-    "ngramcount", "ngraminfo", "ngrammake", "ngramshrink", "ngramsymbols"
+    "ngramapply", "ngramcontext", "ngramcount", "ngraminfo", "ngrammake", "ngrammarginalize", "ngrammerge",
+    "ngramperplexity", "ngramprint", "ngramrandgen", "ngramread", "ngramshrink", "ngramsort", "ngramsplit",
+    "ngramsymbols", "ngramtransfer"
 ] %}
 
 test:
