@@ -17,17 +17,17 @@ build:
 requirements:
   build:
     - {{ compiler('cxx') }}
-    - make  # [unix]
-    - gnuconfig   # [unix]
-    - cmake  # [win]
-    - ninja  # [win]
-    - m2-patch  # [win]
+    - make                    # [unix]
+    - gnuconfig               # [unix]
+    - cmake                   # [win]
+    - ninja                   # [win]
+    - m2-patch                # [win]
   host:
     - openfst ==1.8.2
-    - dlfcn-win32            # [win]
+    - dlfcn-win32             # [win]
   run:
     - openfst ==1.8.2
-    - ucrt     # [win]
+    - ucrt                    # [win]
 
 
 {% set ngram_binaries = [
@@ -39,8 +39,8 @@ test:
     # binaries:
     {% for each_bin in ngram_binaries %}
       # If behaving properly these will have return code 1.
-      - {{ each_bin }} --helpshort >/dev/null || [[ $? == 1 ]]    # [unix]
-      - {{ each_bin }} --helpshort & if errorlevel 1 ( exit /b 0) # [win]
+      - {{ each_bin }} --helpshort >/dev/null || [[ $? == 1 ]]     # [unix]
+      - {{ each_bin }} --helpshort & if errorlevel 1 ( exit /b 0)  # [win]
     {% endfor %}
 
 about:
