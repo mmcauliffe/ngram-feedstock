@@ -1,52 +1,118 @@
-From 54fafad3fd0e3aac037cf4c5a9ab7a727ae949ff Mon Sep 17 00:00:00 2001
+From 931bb6f2dea7141b5abf898391e752f8f1c4ca25 Mon Sep 17 00:00:00 2001
 From: Michael McAuliffe <michael.e.mcauliffe@gmail.com>
 Date: Sat, 16 Jul 2022 11:39:26 -0700
 Subject: [PATCH] Add CMake files
 
 ---
- CMakeLists.txt                    | 34 ++++++++++++++++
- src/CMakeLists.txt                | 11 ++++++
- src/bin/CMakeLists.txt            | 53 +++++++++++++++++++++++++
- src/bin/ngramapply-main.cc        |  2 +-
- src/bin/ngramcontext-main.cc      |  4 +-
- src/bin/ngramcount-main.cc        | 28 ++++++-------
- src/bin/ngraminfo-main.cc         |  4 +-
- src/bin/ngrammake-main.cc         | 20 +++++-----
- src/bin/ngrammarginalize-main.cc  |  8 ++--
- src/bin/ngrammerge-main.cc        | 26 ++++++-------
- src/bin/ngramperplexity-main.cc   | 10 ++---
- src/bin/ngramprint-main.cc        | 20 +++++-----
- src/bin/ngramrandgen-main.cc      | 17 +++++---
- src/bin/ngramrandgen.cc           |  5 +++
- src/bin/ngramread-main.cc         | 12 +++---
- src/bin/ngramread.cc              |  2 -
- src/bin/ngramshrink-main.cc       | 26 ++++++-------
- src/bin/ngramsort-main.cc         |  6 +--
- src/bin/ngramsplit-main.cc        | 12 +++---
- src/bin/ngramsymbols-main.cc      |  4 +-
- src/bin/ngramtransfer-main.cc     | 20 +++++-----
- src/include/ngram/ngram-count.h   |  1 +
- src/include/ngram/ngram-output.h  |  4 ++
- src/include/ngram/ngram-randgen.h |  5 +++
- src/include/ngram/util.h          |  2 +-
- src/lib/CMakeLists.txt            | 65 +++++++++++++++++++++++++++++++
- src/test/CMakeLists.txt           | 15 +++++++
- src/test/ngramhisttest-main.cc    | 10 ++---
- src/test/ngramrandtest-main.cc    | 18 ++++-----
- src/test/ngramrandtest.cc         |  5 +++
- 30 files changed, 324 insertions(+), 125 deletions(-)
+ .gitattributes                         | 18 +++++++
+ CMakeLists.txt                         | 37 +++++++++++++++
+ src/CMakeLists.txt                     | 11 +++++
+ src/bin/CMakeLists.txt                 | 53 +++++++++++++++++++++
+ src/bin/ngramapply-main.cc             |  1 +
+ src/bin/ngramcount-main.cc             |  7 ++-
+ src/bin/ngramdisttrain.sh              |  0
+ src/bin/ngramfractrain.sh              |  0
+ src/bin/ngraminfo-main.cc              |  8 +++-
+ src/bin/ngramperplexity-main.cc        |  8 +++-
+ src/bin/ngramprint-main.cc             |  8 +++-
+ src/bin/ngramrandgen-main.cc           |  5 ++
+ src/bin/ngramrandgen.cc                |  5 ++
+ src/bin/ngramread-main.cc              | 18 +++++--
+ src/bin/ngramread.cc                   |  4 +-
+ src/bin/ngramshrink-main.cc            |  2 +-
+ src/bin/ngramsymbols-main.cc           | 12 ++++-
+ src/include/ngram/ngram-count.h        |  1 +
+ src/include/ngram/ngram-output.h       |  5 ++
+ src/include/ngram/ngram-randgen.h      |  5 ++
+ src/lib/CMakeLists.txt                 | 65 ++++++++++++++++++++++++++
+ src/lib/ngram-context.cc               | 13 +++++-
+ src/lib/ngram-output.cc                |  3 --
+ src/test/CMakeLists.txt                | 42 +++++++++++++++++
+ src/test/disttestsetup.sh              |  0
+ src/test/ngramapply_test.sh            |  0
+ src/test/ngramcount_histograms_test.sh |  0
+ src/test/ngramcount_test.sh            |  0
+ src/test/ngramdistcount_test.sh        |  0
+ src/test/ngramdistmake_test.sh         |  0
+ src/test/ngramdistrand.sh              |  0
+ src/test/ngramdistshrink_test.sh       |  0
+ src/test/ngramdistwittenbell_test.sh   |  0
+ src/test/ngramfracdistmake_test.sh     |  0
+ src/test/ngramfracdistshrink_test.sh   |  0
+ src/test/ngramhisttest-main.cc         |  8 +++-
+ src/test/ngraminfo_test.sh             |  0
+ src/test/ngrammake_test.sh             |  0
+ src/test/ngrammarginalize_test.sh      |  0
+ src/test/ngrammerge_test.sh            |  0
+ src/test/ngramperplexity_test.sh       |  0
+ src/test/ngramprint_test.sh            |  0
+ src/test/ngramrand_test.sh             |  0
+ src/test/ngramrandgen_test.sh          |  0
+ src/test/ngramrandtest-main.cc         | 10 +++-
+ src/test/ngramrandtest.cc              |  5 ++
+ src/test/ngramshrink_test.sh           |  0
+ src/test/ngramsymbols_test.sh          |  0
+ 48 files changed, 332 insertions(+), 22 deletions(-)
+ create mode 100644 .gitattributes
  create mode 100644 CMakeLists.txt
  create mode 100644 src/CMakeLists.txt
  create mode 100644 src/bin/CMakeLists.txt
+ mode change 100755 => 100644 src/bin/ngramdisttrain.sh
+ mode change 100755 => 100644 src/bin/ngramfractrain.sh
  create mode 100644 src/lib/CMakeLists.txt
  create mode 100644 src/test/CMakeLists.txt
+ mode change 100755 => 100644 src/test/disttestsetup.sh
+ mode change 100755 => 100644 src/test/ngramapply_test.sh
+ mode change 100755 => 100644 src/test/ngramcount_histograms_test.sh
+ mode change 100755 => 100644 src/test/ngramcount_test.sh
+ mode change 100755 => 100644 src/test/ngramdistcount_test.sh
+ mode change 100755 => 100644 src/test/ngramdistmake_test.sh
+ mode change 100755 => 100644 src/test/ngramdistrand.sh
+ mode change 100755 => 100644 src/test/ngramdistshrink_test.sh
+ mode change 100755 => 100644 src/test/ngramdistwittenbell_test.sh
+ mode change 100755 => 100644 src/test/ngramfracdistmake_test.sh
+ mode change 100755 => 100644 src/test/ngramfracdistshrink_test.sh
+ mode change 100755 => 100644 src/test/ngraminfo_test.sh
+ mode change 100755 => 100644 src/test/ngrammake_test.sh
+ mode change 100755 => 100644 src/test/ngrammarginalize_test.sh
+ mode change 100755 => 100644 src/test/ngrammerge_test.sh
+ mode change 100755 => 100644 src/test/ngramperplexity_test.sh
+ mode change 100755 => 100644 src/test/ngramprint_test.sh
+ mode change 100755 => 100644 src/test/ngramrand_test.sh
+ mode change 100755 => 100644 src/test/ngramrandgen_test.sh
+ mode change 100755 => 100644 src/test/ngramshrink_test.sh
+ mode change 100755 => 100644 src/test/ngramsymbols_test.sh
 
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+index 0000000..02a8638
+--- /dev/null
++++ b/.gitattributes
+@@ -0,0 +1,18 @@
++*.php text
++        *.css text
++        *.js text
++        *.json text
++        *.htm text
++        *.html text
++        *.xml text
++        *.txt text
++        *.pyx text
++        *.inc text
++        *.cpp text
++        *.pxd text
++        *.in text
++        *.am text
++        *.sh text
++        *.h text
++        *.cc text
++
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 new file mode 100644
-index 0000000..34cd009
+index 0000000..29591c3
 --- /dev/null
 +++ b/CMakeLists.txt
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,37 @@
 +project(ngram)
 +cmake_minimum_required(VERSION 3.18)
 +
@@ -56,7 +122,10 @@ index 0000000..34cd009
 +set(CMAKE_CXX_STANDARD 17)
 +set(CMAKE_CXX_EXTENSIONS OFF)
 +option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-+option(NGRAM_BUILD_TEST "Build ngram tests" ON)
++option(NGRAM_BUILD_TEST "Build ngram tests" OFF)
++
++include_directories(${CMAKE_PREFIX_PATH}/include)
++link_directories(${CMAKE_PREFIX_PATH}/lib)
 +
 +set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 +if (MSVC)
@@ -101,14 +170,14 @@ index 0000000..c8c3d8d
 \ No newline at end of file
 diff --git a/src/bin/CMakeLists.txt b/src/bin/CMakeLists.txt
 new file mode 100644
-index 0000000..c13e6c3
+index 0000000..d11f3c1
 --- /dev/null
 +++ b/src/bin/CMakeLists.txt
 @@ -0,0 +1,53 @@
 +function (add_executable2 _name)
 +    add_executable(${ARGV})
 +    if (TARGET ${_name})
-+        target_link_libraries(${_name} ngram fstfarscript fstfar fstscriptutils fstscript fst ${CMAKE_DL_LIBS})
++        target_link_libraries(${_name} ngram fstfarscript fstfar fstscript fstlinearscript fst ${CMAKE_DL_LIBS})
 +        set_target_properties(${_name} PROPERTIES FOLDER bin)
 +    endif()
 +
@@ -118,7 +187,7 @@ index 0000000..c13e6c3
 +function (add_executable2_hist _name)
 +    add_executable(${ARGV})
 +    if (TARGET ${_name})
-+        target_link_libraries(${_name} ngramhist ngram fstfarscript fstfar fstscriptutils fstscript fst ${CMAKE_DL_LIBS})
++        target_link_libraries(${_name} ngramhist ngram fstfarscript fstfar fstscript fstlinearscript fst ${CMAKE_DL_LIBS})
 +        set_target_properties(${_name} PROPERTIES FOLDER bin)
 +    endif()
 +
@@ -159,236 +228,148 @@ index 0000000..c13e6c3
 +
 +add_executable2_hist(ngramtransfer ngramtransfer-main.cc ngramtransfer.cc)
 diff --git a/src/bin/ngramapply-main.cc b/src/bin/ngramapply-main.cc
-index 7e9a22c..311ddfa 100644
+index 7e9a22c..2428359 100644
 --- a/src/bin/ngramapply-main.cc
 +++ b/src/bin/ngramapply-main.cc
-@@ -24,7 +24,7 @@
+@@ -19,6 +19,7 @@
+ #include <string>
+ 
+ #include <fst/flags.h>
++#include <fst/symbol-table.h>
+ #include <fst/extensions/far/far.h>
+ #include <fst/fst.h>
  #include <ngram/lexicographic-map.h>
- #include <ngram/ngram-output.h>
- 
--DECLARE_string(bo_arc_type);
-+DECLARE_EXE_string(bo_arc_type);
- 
- enum BACKOFF_TYPE { PHI, EPS, LEX_EPS };
- 
-diff --git a/src/bin/ngramcontext-main.cc b/src/bin/ngramcontext-main.cc
-index 9680157..6fc8479 100644
---- a/src/bin/ngramcontext-main.cc
-+++ b/src/bin/ngramcontext-main.cc
-@@ -24,8 +24,8 @@
- #include <ngram/ngram-context.h>
- #include <ngram/ngram-model.h>
- 
--DECLARE_int64(contexts);
--DECLARE_double(bigram_threshold);
-+DECLARE_EXE_int64(contexts);
-+DECLARE_EXE_double(bigram_threshold);
- 
- int ngramcontext_main(int argc, char **argv) {
-   std::string usage = "Generates a context set from an input LM.\n\n  Usage: ";
 diff --git a/src/bin/ngramcount-main.cc b/src/bin/ngramcount-main.cc
-index 9a8010d..6683d3b 100644
+index 9a8010d..582a85b 100644
 --- a/src/bin/ngramcount-main.cc
 +++ b/src/bin/ngramcount-main.cc
-@@ -30,28 +30,28 @@
- #include <ngram/ngram-count.h>
- #include <ngram/ngram-model.h>
+@@ -16,6 +16,8 @@
+ // Counts n-grams from an input fst archive (FAR) file.
  
--DECLARE_string(method);
--DECLARE_int64(order);
-+DECLARE_EXE_string(method);
-+DECLARE_EXE_int64(order);
- 
- // For counting:
--DECLARE_bool(round_to_int);
--DECLARE_bool(output_fst);
--DECLARE_bool(require_symbols);
--DECLARE_double(add_to_symbol_unigram_count);
-+DECLARE_EXE_bool(round_to_int);
-+DECLARE_EXE_bool(output_fst);
-+DECLARE_EXE_bool(require_symbols);
-+DECLARE_EXE_double(add_to_symbol_unigram_count);
- 
- // For counting and histograms:
--DECLARE_bool(epsilon_as_backoff);
-+DECLARE_EXE_bool(epsilon_as_backoff);
- 
- // For count-of-counting:
--DECLARE_string(context_pattern);
-+DECLARE_EXE_string(context_pattern);
- 
- // For merging:
--DECLARE_double(alpha);
--DECLARE_double(beta);
--DECLARE_bool(normalize);
--DECLARE_int64(backoff_label);
--DECLARE_double(norm_eps);
--DECLARE_bool(check_consistency);
-+DECLARE_EXE_double(alpha);
-+DECLARE_EXE_double(beta);
-+DECLARE_EXE_bool(normalize);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_double(norm_eps);
-+DECLARE_EXE_bool(check_consistency);
- 
- int ngramcount_main(int argc, char **argv) {
-   std::string usage = "Count n-grams from input file.\n\n  Usage: ";
+ #include <fstream>
++#include <io.h>
++#include <fcntl.h>
+ #include <iostream>
+ #include <memory>
+ #include <string>
+@@ -95,12 +97,15 @@ int ngramcount_main(int argc, char **argv) {
+           FST_FLAGS_add_to_symbol_unigram_count);
+       std::ofstream ofstrm;
+       if (!out_name.empty()) {
+-        ofstrm.open(out_name);
++        ofstrm.open(out_name, std::ios_base::out | std::ios_base::binary);
+         if (!ofstrm) {
+           LOG(ERROR) << "GetNGramCounts: Open failed, file = " << out_name;
+           return 1;
+         }
+       }
++      if (!ofstrm.is_open()) {
++          _setmode(_fileno(stdout), _O_BINARY);
++      }
+       std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+       for (size_t i = 0; i < ngram_counts.size(); ++i)
+         ostrm << ngram_counts[i] << std::endl;
+diff --git a/src/bin/ngramdisttrain.sh b/src/bin/ngramdisttrain.sh
+old mode 100755
+new mode 100644
+diff --git a/src/bin/ngramfractrain.sh b/src/bin/ngramfractrain.sh
+old mode 100755
+new mode 100644
 diff --git a/src/bin/ngraminfo-main.cc b/src/bin/ngraminfo-main.cc
-index 5573f7d..e900dba 100644
+index 5573f7d..64bad1d 100644
 --- a/src/bin/ngraminfo-main.cc
 +++ b/src/bin/ngraminfo-main.cc
-@@ -27,8 +27,8 @@
- #include <ngram/ngram-model.h>
- #include <ngram/util.h>
+@@ -21,6 +21,9 @@
+ #include <ostream>
+ #include <sstream>
+ #include <string>
++#include <io.h>
++#include <fcntl.h>
++#include <iostream>
  
--DECLARE_bool(check_consistency);
--DECLARE_double(norm_eps);
-+DECLARE_EXE_bool(check_consistency);
-+DECLARE_EXE_double(norm_eps);
+ #include <fst/flags.h>
+ #include <fst/vector-fst.h>
+@@ -110,12 +113,15 @@ int ngraminfo_main(int argc, char **argv) {
  
- namespace ngram {
- 
-diff --git a/src/bin/ngrammake-main.cc b/src/bin/ngrammake-main.cc
-index 503e172..fa42025 100644
---- a/src/bin/ngrammake-main.cc
-+++ b/src/bin/ngrammake-main.cc
-@@ -22,16 +22,16 @@
- #include <ngram/hist-arc.h>
- #include <ngram/ngram-make.h>
- 
--DECLARE_double(witten_bell_k);
--DECLARE_double(discount_D);
--DECLARE_string(method);
--DECLARE_bool(backoff);
--DECLARE_bool(interpolate);
--DECLARE_int64(bins);
--DECLARE_int64(backoff_label);
--DECLARE_double(norm_eps);
--DECLARE_bool(check_consistency);
--DECLARE_string(count_of_counts);
-+DECLARE_EXE_double(witten_bell_k);
-+DECLARE_EXE_double(discount_D);
-+DECLARE_EXE_string(method);
-+DECLARE_EXE_bool(backoff);
-+DECLARE_EXE_bool(interpolate);
-+DECLARE_EXE_int64(bins);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_double(norm_eps);
-+DECLARE_EXE_bool(check_consistency);
-+DECLARE_EXE_string(count_of_counts);
- 
- int ngrammake_main(int argc, char **argv) {
-   std::string usage = "Make n-gram model from input count file.\n\n  Usage: ";
-diff --git a/src/bin/ngrammarginalize-main.cc b/src/bin/ngrammarginalize-main.cc
-index a1ffb78..95bb3ef 100644
---- a/src/bin/ngrammarginalize-main.cc
-+++ b/src/bin/ngrammarginalize-main.cc
-@@ -24,10 +24,10 @@
- #include <ngram/ngram-marginalize.h>
- #include <ngram/util.h>
- 
--DECLARE_int64(backoff_label);
--DECLARE_int32(max_bo_updates);
--DECLARE_double(norm_eps);
--DECLARE_bool(check_consistency);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_int32(max_bo_updates);
-+DECLARE_EXE_double(norm_eps);
-+DECLARE_EXE_bool(check_consistency);
- 
- int ngrammarginalize_main(int argc, char **argv) {
-   std::string usage =
-diff --git a/src/bin/ngrammerge-main.cc b/src/bin/ngrammerge-main.cc
-index 804fb60..7493c2c 100644
---- a/src/bin/ngrammerge-main.cc
-+++ b/src/bin/ngrammerge-main.cc
-@@ -29,19 +29,19 @@
- #include <ngram/ngram-model-merge.h>
- #include <ngram/ngram-replace-merge.h>
- 
--DECLARE_double(alpha);
--DECLARE_double(beta);
--DECLARE_string(context_pattern);
--DECLARE_string(contexts);
--DECLARE_bool(normalize);
--DECLARE_string(method);
--DECLARE_int32(max_replace_order);
--DECLARE_string(ofile);
--DECLARE_int64(backoff_label);
--DECLARE_double(norm_eps);
--DECLARE_bool(check_consistency);
--DECLARE_bool(complete);
--DECLARE_bool(round_to_int);
-+DECLARE_EXE_double(alpha);
-+DECLARE_EXE_double(beta);
-+DECLARE_EXE_string(context_pattern);
-+DECLARE_EXE_string(contexts);
-+DECLARE_EXE_bool(normalize);
-+DECLARE_EXE_string(method);
-+DECLARE_EXE_int32(max_replace_order);
-+DECLARE_EXE_string(ofile);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_double(norm_eps);
-+DECLARE_EXE_bool(check_consistency);
-+DECLARE_EXE_bool(complete);
-+DECLARE_EXE_bool(round_to_int);
- 
- namespace {
- 
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
+       return 1;
+     }
+   }
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+   ngram::NGramModel<fst::StdArc> ngram(
+       *fst, 0, FST_FLAGS_norm_eps,
 diff --git a/src/bin/ngramperplexity-main.cc b/src/bin/ngramperplexity-main.cc
-index 08a0ee3..2a9d1d8 100644
+index 08a0ee3..ee3d58a 100644
 --- a/src/bin/ngramperplexity-main.cc
 +++ b/src/bin/ngramperplexity-main.cc
-@@ -25,11 +25,11 @@
+@@ -20,6 +20,9 @@
+ #include <ostream>
+ #include <string>
+ #include <vector>
++#include <io.h>
++#include <fcntl.h>
++#include <iostream>
+ 
+ #include <fst/flags.h>
  #include <fst/extensions/far/far.h>
- #include <ngram/ngram-output.h>
+@@ -56,12 +59,15 @@ int ngramperplexity_main(int argc, char **argv) {
  
--DECLARE_bool(use_phimatcher);
--DECLARE_string(OOV_symbol);
--DECLARE_double(OOV_class_size);
--DECLARE_double(OOV_probability);
--DECLARE_string(context_pattern);
-+DECLARE_EXE_bool(use_phimatcher);
-+DECLARE_EXE_string(OOV_symbol);
-+DECLARE_EXE_double(OOV_class_size);
-+DECLARE_EXE_double(OOV_probability);
-+DECLARE_EXE_string(context_pattern);
+   std::ofstream ofstrm;
+   if (argc > 3 && (strcmp(argv[3], "-") != 0)) {
+-    ofstrm.open(argv[3]);
++    ofstrm.open(argv[3], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[3];
+       return 1;
+     }
+   }
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
  
- int ngramperplexity_main(int argc, char **argv) {
-   std::string usage = "Apply n-gram model to input FST archive.\n\n  Usage: ";
+   ngram::NGramOutput ngram(fst.get(), ostrm, 0, false,
 diff --git a/src/bin/ngramprint-main.cc b/src/bin/ngramprint-main.cc
-index 20c0bd3..b75c31b 100644
+index 20c0bd3..bace07c 100644
 --- a/src/bin/ngramprint-main.cc
 +++ b/src/bin/ngramprint-main.cc
-@@ -23,16 +23,16 @@
+@@ -19,6 +19,9 @@
+ #include <memory>
+ #include <ostream>
+ #include <string>
++#include <io.h>
++#include <fcntl.h>
++#include <iostream>
+ 
  #include <fst/flags.h>
  #include <ngram/ngram-output.h>
+@@ -65,12 +68,15 @@ int ngramprint_main(int argc, char **argv) {
  
--DECLARE_bool(ARPA);
--DECLARE_bool(backoff);
--DECLARE_bool(backoff_inline);
--DECLARE_bool(negativelogs);
--DECLARE_bool(integers);
--DECLARE_int64(backoff_label);
--DECLARE_bool(check_consistency);
--DECLARE_string(context_pattern);
--DECLARE_bool(include_all_suffixes);
--DECLARE_string(symbols);
-+DECLARE_EXE_bool(ARPA);
-+DECLARE_EXE_bool(backoff);
-+DECLARE_EXE_bool(backoff_inline);
-+DECLARE_EXE_bool(negativelogs);
-+DECLARE_EXE_bool(integers);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_bool(check_consistency);
-+DECLARE_EXE_string(context_pattern);
-+DECLARE_EXE_bool(include_all_suffixes);
-+DECLARE_EXE_string(symbols);
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
+       return 1;
+     }
+   }
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
  
- int ngramprint_main(int argc, char **argv) {
-   std::string usage = "Print n-gram counts and models.\n\n  Usage: ";
+   ngram::NGramOutput ngram(fst.get(), ostrm, FST_FLAGS_backoff_label,
 diff --git a/src/bin/ngramrandgen-main.cc b/src/bin/ngramrandgen-main.cc
-index 6f5f80e..5f04be3 100644
+index 6f5f80e..1f8cb96 100644
 --- a/src/bin/ngramrandgen-main.cc
 +++ b/src/bin/ngramrandgen-main.cc
 @@ -16,7 +16,12 @@
@@ -404,25 +385,6 @@ index 6f5f80e..5f04be3 100644
  
  #include <cstdlib>
  #include <memory>
-@@ -32,12 +37,12 @@
- #include <fst/vector-fst.h>
- #include <ngram/ngram-randgen.h>
- 
--DECLARE_int32(max_length);
--DECLARE_int64(max_sents);
--DECLARE_int32(seed);
--DECLARE_bool(remove_epsilon);
--DECLARE_bool(weighted);
--DECLARE_bool(remove_total_weight);
-+DECLARE_EXE_int32(max_length);
-+DECLARE_EXE_int64(max_sents);
-+DECLARE_EXE_int32(seed);
-+DECLARE_EXE_bool(remove_epsilon);
-+DECLARE_EXE_bool(weighted);
-+DECLARE_EXE_bool(remove_total_weight);
- 
- namespace {
- 
 diff --git a/src/bin/ngramrandgen.cc b/src/bin/ngramrandgen.cc
 index 8689bee..b1df7b7 100644
 --- a/src/bin/ngramrandgen.cc
@@ -441,34 +403,75 @@ index 8689bee..b1df7b7 100644
  #include <climits>
  
 diff --git a/src/bin/ngramread-main.cc b/src/bin/ngramread-main.cc
-index b8933e4..9a38578 100644
+index b8933e4..29118ee 100644
 --- a/src/bin/ngramread-main.cc
 +++ b/src/bin/ngramread-main.cc
-@@ -22,13 +22,11 @@
+@@ -16,10 +16,14 @@
+ // Reads textual model representations and produces n-gram model FST.
+ 
+ #include <fstream>
+-#include <iostream>
+ #include <string>
++#include <io.h>
++#include <fcntl.h>
++#include <iostream>
+ 
  #include <fst/flags.h>
++#include <fst/exports/exports.h>
++#include <fst/extensions/linear/linearscript.h>
  #include <ngram/ngram-input.h>
  
--DECLARE_bool(ARPA);
--DECLARE_bool(renormalize_arpa);
--DECLARE_string(symbols);
--DECLARE_string(epsilon_symbol);
--DECLARE_string(OOV_symbol);
+ DECLARE_bool(ARPA);
+@@ -27,8 +31,6 @@ DECLARE_bool(renormalize_arpa);
+ DECLARE_string(symbols);
+ DECLARE_string(epsilon_symbol);
+ DECLARE_string(OOV_symbol);
 -DECLARE_string(start_symbol);  // defined in ngram-output.cc
 -DECLARE_string(end_symbol);    // defined in ngram-output.cc
-+DECLARE_EXE_bool(ARPA);
-+DECLARE_EXE_bool(renormalize_arpa);
-+DECLARE_EXE_string(symbols);
-+DECLARE_EXE_string(epsilon_symbol);
-+DECLARE_EXE_string(OOV_symbol);
  
  int ngramread_main(int argc, char **argv) {
    std::string usage = "Transform text formats to FST.\n\n  Usage: ";
+@@ -44,22 +46,28 @@ int ngramread_main(int argc, char **argv) {
+ 
+   std::ifstream ifstrm;
+   if (argc > 1 && (strcmp(argv[1], "-") != 0)) {
+-    ifstrm.open(argv[1]);
++    ifstrm.open(argv[1], std::ios_base::in | std::ios_base::binary);
+     if (!ifstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[1];
+       return 1;
+     }
+   }
++  if (!ifstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
+   std::istream &istrm = ifstrm.is_open() ? ifstrm : std::cin;
+ 
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[2];
+       return 1;
+     }
+   }
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+ 
+   ngram::NGramInput input(
 diff --git a/src/bin/ngramread.cc b/src/bin/ngramread.cc
-index e6f5d38..4e08f07 100644
+index e6f5d38..b9a4cb4 100644
 --- a/src/bin/ngramread.cc
 +++ b/src/bin/ngramread.cc
-@@ -23,8 +23,6 @@ DEFINE_bool(renormalize_arpa, false,
+@@ -21,10 +21,10 @@ DEFINE_bool(renormalize_arpa, false,
+             "model by normalizing the unigram state and recomputing the "
+             "backoff weights.  Only used if --ARPA=true.");
  DEFINE_string(symbols, "", "Label symbol table");
++DEFINE_string(start_symbol, "<s>", "Start of sentence symbol");
++DEFINE_string(end_symbol, "</s>", "End of sentence symbol");
  DEFINE_string(epsilon_symbol, "<epsilon>", "Label for epsilon transitions");
  DEFINE_string(OOV_symbol, "<UNK>", "Class label for OOV symbols");
 -DECLARE_string(start_symbol);  // defined in ngram-output.cc
@@ -477,128 +480,62 @@ index e6f5d38..4e08f07 100644
  int ngramread_main(int argc, char** argv);
  int main(int argc, char** argv) {
 diff --git a/src/bin/ngramshrink-main.cc b/src/bin/ngramshrink-main.cc
-index 8bbb21a..218149d 100644
+index 8bbb21a..00c2443 100644
 --- a/src/bin/ngramshrink-main.cc
 +++ b/src/bin/ngramshrink-main.cc
-@@ -23,19 +23,19 @@
- #include <ngram/ngram-list-prune.h>
- #include <ngram/ngram-shrink.h>
- 
--DECLARE_double(total_unigram_count);
--DECLARE_double(theta);
--DECLARE_int64(target_number_of_ngrams);
--DECLARE_int32(min_order_to_prune);
--DECLARE_string(method);
--DECLARE_string(list_file);
--DECLARE_string(count_pattern);
--DECLARE_string(context_pattern);
--DECLARE_int32(shrink_opt);
--DECLARE_int64(backoff_label);
--DECLARE_double(norm_eps);
--DECLARE_bool(check_consistency);
--DECLARE_bool(retry_downcase);
-+DECLARE_EXE_double(total_unigram_count);
-+DECLARE_EXE_double(theta);
-+DECLARE_EXE_int64(target_number_of_ngrams);
-+DECLARE_EXE_int32(min_order_to_prune);
-+DECLARE_EXE_string(method);
-+DECLARE_EXE_string(list_file);
-+DECLARE_EXE_string(count_pattern);
-+DECLARE_EXE_string(context_pattern);
-+DECLARE_EXE_int32(shrink_opt);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_double(norm_eps);
-+DECLARE_EXE_bool(check_consistency);
-+DECLARE_EXE_bool(retry_downcase);
- 
- int ngramshrink_main(int argc, char **argv) {
-   std::string usage = "Shrink n-gram model from input model file.\n\n  Usage: ";
-diff --git a/src/bin/ngramsort-main.cc b/src/bin/ngramsort-main.cc
-index 035dcd0..f5888ed 100644
---- a/src/bin/ngramsort-main.cc
-+++ b/src/bin/ngramsort-main.cc
-@@ -21,9 +21,9 @@
- #include <fst/flags.h>
- #include <ngram/ngram-mutable-model.h>
- 
--DECLARE_bool(check_consistency);
--DECLARE_int64(backoff_label);
--DECLARE_double(norm_eps);
-+DECLARE_EXE_bool(check_consistency);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_double(norm_eps);
- 
- int ngramsort_main(int argc, char **argv) {
-   std::string usage =
-diff --git a/src/bin/ngramsplit-main.cc b/src/bin/ngramsplit-main.cc
-index 7cf4ab5..5d163cc 100644
---- a/src/bin/ngramsplit-main.cc
-+++ b/src/bin/ngramsplit-main.cc
-@@ -26,12 +26,12 @@
- #include <ngram/ngram-complete.h>
- #include <ngram/ngram-split.h>
- 
--DECLARE_int64(backoff_label);
--DECLARE_string(contexts);
--DECLARE_string(method);
--DECLARE_double(norm_eps);
--DECLARE_bool(complete);
--DECLARE_string(far_type);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_string(contexts);
-+DECLARE_EXE_string(method);
-+DECLARE_EXE_double(norm_eps);
-+DECLARE_EXE_bool(complete);
-+DECLARE_EXE_string(far_type);
- 
- namespace {
- 
+@@ -63,7 +63,7 @@ int ngramshrink_main(int argc, char **argv) {
+       LOG(WARNING) << "list_file parameter empty, no n-grams given";
+       return 1;
+     }
+-    std::ifstream ifstrm(FST_FLAGS_list_file);
++    std::ifstream ifstrm(FST_FLAGS_list_file, std::ios_base::in | std::ios_base::binary);
+     if (!ifstrm) {
+       LOG(WARNING) << "NGramShrink: Can't open "
+                    << FST_FLAGS_list_file << " for reading";
 diff --git a/src/bin/ngramsymbols-main.cc b/src/bin/ngramsymbols-main.cc
-index 2a47606..e5619a6 100644
+index 2a47606..21f7035 100644
 --- a/src/bin/ngramsymbols-main.cc
 +++ b/src/bin/ngramsymbols-main.cc
-@@ -22,8 +22,8 @@
- #include <fst/flags.h>
- #include <ngram/ngram-input.h>
+@@ -16,6 +16,8 @@
+ // Derives a symbol table from an input text corpus.
  
--DECLARE_string(epsilon_symbol);
--DECLARE_string(OOV_symbol);
-+DECLARE_EXE_string(epsilon_symbol);
-+DECLARE_EXE_string(OOV_symbol);
+ #include <fstream>
++#include <io.h>
++#include <fcntl.h>
+ #include <iostream>
+ #include <string>
  
- int ngramsymbols_main(int argc, char **argv) {
-   std::string usage = "Derives a symbol table from a corpus.\n\n  Usage: ";
-diff --git a/src/bin/ngramtransfer-main.cc b/src/bin/ngramtransfer-main.cc
-index a058073..6af7e07 100644
---- a/src/bin/ngramtransfer-main.cc
-+++ b/src/bin/ngramtransfer-main.cc
-@@ -24,16 +24,16 @@
- #include <ngram/ngram-complete.h>
- #include <ngram/ngram-transfer.h>
+@@ -39,22 +41,28 @@ int ngramsymbols_main(int argc, char **argv) {
  
--DECLARE_int64(backoff_label);
--DECLARE_string(context_pattern1);
--DECLARE_string(context_pattern2);
--DECLARE_string(contexts);
--DECLARE_string(ofile);
--DECLARE_string(method);
--DECLARE_int32(index);
--DECLARE_bool(transfer_from);
--DECLARE_bool(normalize);
--DECLARE_bool(complete);
-+DECLARE_EXE_int64(backoff_label);
-+DECLARE_EXE_string(context_pattern1);
-+DECLARE_EXE_string(context_pattern2);
-+DECLARE_EXE_string(contexts);
-+DECLARE_EXE_string(ofile);
-+DECLARE_EXE_string(method);
-+DECLARE_EXE_int32(index);
-+DECLARE_EXE_bool(transfer_from);
-+DECLARE_EXE_bool(normalize);
-+DECLARE_EXE_bool(complete);
+   std::ifstream ifstrm;
+   if (argc > 1 && (strcmp(argv[1], "-") != 0)) {
+-    ifstrm.open(argv[1]);
++    ifstrm.open(argv[1], std::ios_base::in | std::ios_base::binary);
+     if (!ifstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[1];
+       return 1;
+     }
+   }
++  if (!ifstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
+   std::istream &istrm = ifstrm.is_open() ? ifstrm : std::cin;
  
- namespace {
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[2];
+       return 1;
+     }
+   }
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
  
+   ngram::NGramInput input(istrm, ostrm, /*symbols=*/"",
 diff --git a/src/include/ngram/ngram-count.h b/src/include/ngram/ngram-count.h
 index 57688f9..06cf4fb 100644
 --- a/src/include/ngram/ngram-count.h
@@ -612,18 +549,19 @@ index 57688f9..06cf4fb 100644
  
  namespace ngram {
 diff --git a/src/include/ngram/ngram-output.h b/src/include/ngram/ngram-output.h
-index c136ddd..f990c3e 100644
+index c136ddd..d384bc2 100644
 --- a/src/include/ngram/ngram-output.h
 +++ b/src/include/ngram/ngram-output.h
-@@ -25,8 +25,12 @@
+@@ -25,8 +25,13 @@
  #include <fst/compose.h>
  #include <ngram/ngram-context.h>
  #include <ngram/ngram-mutable-model.h>
 +#include <fst/flags.h>
++#include <fst/exports/exports.h>
  #include <ngram/util.h>
  
-+DECLARE_string(start_symbol);
-+DECLARE_string(end_symbol);
++DECLARE_export_string(start_symbol, fst_EXPORT);
++DECLARE_export_string(end_symbol, fst_EXPORT);
 +
  namespace ngram {
  
@@ -645,22 +583,9 @@ index a49d349..c0547b5 100644
  
  #include <vector>
  
-diff --git a/src/include/ngram/util.h b/src/include/ngram/util.h
-index ea6cb0c..a383a5c 100644
---- a/src/include/ngram/util.h
-+++ b/src/include/ngram/util.h
-@@ -21,7 +21,7 @@
- 
- // UTILITY FOR ERROR HANDLING
- 
--DECLARE_bool(ngram_error_fatal);
-+DECLARE_EXE_bool(ngram_error_fatal);
- 
- #define NGRAMERROR()                                                     \
-   LOG(LEVEL(FST_FLAGS_ngram_error_fatal ? base_logging::FATAL \
 diff --git a/src/lib/CMakeLists.txt b/src/lib/CMakeLists.txt
 new file mode 100644
-index 0000000..126b8f7
+index 0000000..2069108
 --- /dev/null
 +++ b/src/lib/CMakeLists.txt
 @@ -0,0 +1,65 @@
@@ -694,7 +619,7 @@ index 0000000..126b8f7
 +                         $<INSTALL_INTERFACE:include>)
 +target_include_directories(ngram PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
 +                         $<INSTALL_INTERFACE:include>)
-+target_link_libraries(ngram fst ${CMAKE_DL_LIBS})
++target_link_libraries(ngram fst fstscript fstlinearscript ${CMAKE_DL_LIBS})
 +
 +
 +
@@ -720,7 +645,7 @@ index 0000000..126b8f7
 +                         $<INSTALL_INTERFACE:include>)
 +target_include_directories(ngramhist PUBLIC $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
 +                         $<INSTALL_INTERFACE:include>)
-+target_link_libraries(ngramhist fst fstscriptutils fstscript ${CMAKE_DL_LIBS})
++target_link_libraries(ngramhist fst fstscript ${CMAKE_DL_LIBS})
 +
 +
 +
@@ -730,18 +655,93 @@ index 0000000..126b8f7
 +RUNTIME DESTINATION bin
 +)
 \ No newline at end of file
+diff --git a/src/lib/ngram-context.cc b/src/lib/ngram-context.cc
+index f7e1de3..c148c85 100644
+--- a/src/lib/ngram-context.cc
++++ b/src/lib/ngram-context.cc
+@@ -25,6 +25,9 @@
+ #include <ostream>
+ #include <string>
+ #include <vector>
++#include <io.h>
++#include <fcntl.h>
++#include <iostream>
+ 
+ #include <fst/fst.h>
+ 
+@@ -268,11 +271,14 @@ bool NGramReadContexts(const std::string &file,
+                        std::vector<std::string> *contexts) {
+   contexts->clear();
+   std::ifstream fstrm;
+-  fstrm.open(file);
++  fstrm.open(file, std::ios_base::in | std::ios_base::binary);
+   if (!fstrm) {
+     LOG(ERROR) << "NGramReadContexts: Can't open file: " << file;
+     return false;
+   }
++  if (!fstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
+   std::istream &strm = fstrm.is_open() ? fstrm : std::cin;
+   std::string line;
+   while (std::getline(strm, line)) contexts->push_back(line);
+@@ -283,12 +289,15 @@ bool NGramWriteContexts(const std::string &file,
+                         const std::vector<std::string> &contexts) {
+   std::ofstream ofstrm;
+   if (!file.empty()) {
+-    ofstrm.open(file);
++    ofstrm.open(file, std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << "NGramWriteContexts: Can't create file: " << file;
+       return false;
+     }
+   }
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
+   std::ostream &strm = ofstrm.is_open() ? ofstrm : std::cout;
+   for (int i = 0; i < contexts.size(); ++i) strm << contexts[i] << std::endl;
+   return true;
+diff --git a/src/lib/ngram-output.cc b/src/lib/ngram-output.cc
+index a38a98b..01b5d6a 100644
+--- a/src/lib/ngram-output.cc
++++ b/src/lib/ngram-output.cc
+@@ -26,9 +26,6 @@
+ #include <fst/vector-fst.h>
+ #include <ngram/util.h>
+ 
+-DEFINE_string(start_symbol, "<s>", "Class label for sentence start");
+-DEFINE_string(end_symbol, "</s>", "Class label for sentence end");
+-
+ namespace ngram {
+ 
+ using fst::ArcIterator;
 diff --git a/src/test/CMakeLists.txt b/src/test/CMakeLists.txt
 new file mode 100644
-index 0000000..2a770d0
+index 0000000..9342abe
 --- /dev/null
 +++ b/src/test/CMakeLists.txt
-@@ -0,0 +1,15 @@
+@@ -0,0 +1,42 @@
 +add_executable(ngramhisttest
 +ngramhisttest.cc
 +ngramhisttest-main.cc
 +        )
-+target_link_libraries(ngramhisttest fst fstfar fstscriptutils fstscript ngram ngramhist ${CMAKE_DL_LIBS})
++target_link_libraries(ngramhisttest fst fstfar fstscript ngram ngramhist ${CMAKE_DL_LIBS})
 +set_target_properties(ngramhisttest PROPERTIES FOLDER test)
++if (MSVC)
++elseif (APPLE)
++        set_target_properties(ngramhisttest 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else() 
++        set_target_properties(ngramhisttest 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
 +add_test(NAME ngramhisttest-test COMMAND ngramhisttest)
 +
 +add_executable(ngramrandtest
@@ -749,59 +749,151 @@ index 0000000..2a770d0
 +ngramrandtest-main.cc
 +        )
 +target_link_libraries(ngramrandtest fst fstfar ngram ${CMAKE_DL_LIBS})
-+set_target_properties(ngramrandtest PROPERTIES FOLDER test)
++if (MSVC)
++elseif (APPLE)
++        set_target_properties(ngramrandtest 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++else()
++        set_target_properties(ngramrandtest 
++                PROPERTIES 
++                        FOLDER test 
++                        ENVIRONMENT "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src/lib;${CMAKE_INSTALL_PREFIX}/lib"
++        )
++endif()
 +add_test(NAME ngramrandtest-test COMMAND ngramrandtest)
 \ No newline at end of file
+diff --git a/src/test/disttestsetup.sh b/src/test/disttestsetup.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramapply_test.sh b/src/test/ngramapply_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramcount_histograms_test.sh b/src/test/ngramcount_histograms_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramcount_test.sh b/src/test/ngramcount_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramdistcount_test.sh b/src/test/ngramdistcount_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramdistmake_test.sh b/src/test/ngramdistmake_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramdistrand.sh b/src/test/ngramdistrand.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramdistshrink_test.sh b/src/test/ngramdistshrink_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramdistwittenbell_test.sh b/src/test/ngramdistwittenbell_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramfracdistmake_test.sh b/src/test/ngramfracdistmake_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramfracdistshrink_test.sh b/src/test/ngramfracdistshrink_test.sh
+old mode 100755
+new mode 100644
 diff --git a/src/test/ngramhisttest-main.cc b/src/test/ngramhisttest-main.cc
-index 51a006f..57833c0 100644
+index 51a006f..eb3f2d9 100644
 --- a/src/test/ngramhisttest-main.cc
 +++ b/src/test/ngramhisttest-main.cc
-@@ -24,11 +24,11 @@
- #include <fst/script/compile.h>
- #include <fst/script/equal.h>
+@@ -18,6 +18,9 @@
  
--DECLARE_double(delta);
--DECLARE_string(ifile);
--DECLARE_string(syms);
--DECLARE_string(cfile);
--DECLARE_string(ofile);
-+DECLARE_EXE_double(delta);
-+DECLARE_EXE_string(ifile);
-+DECLARE_EXE_string(syms);
-+DECLARE_EXE_string(cfile);
-+DECLARE_EXE_string(ofile);
+ #include <fstream>
+ #include <istream>
++#include <io.h>
++#include <fcntl.h>
++#include <iostream>
  
- int ngramhisttest_main(int argc, char **argv) {
-   using fst::script::FstClass;
+ #include <fst/flags.h>
+ #include <fst/log.h>
+@@ -69,12 +72,15 @@ int ngramhisttest_main(int argc, char **argv) {
+     if (!syms) return 1;
+     std::unique_ptr<const fst::SymbolTable> ssyms;
+     std::ifstream fstrm;
+-    fstrm.open(FST_FLAGS_ifile);
++    fstrm.open(FST_FLAGS_ifile, std::ios_base::in | std::ios_base::binary);
+     if (!fstrm) {
+       LOG(ERROR) << argv[0]
+                  << ": Open failed, file = " << FST_FLAGS_ifile;
+       return 1;
+     }
++    if (!fstrm.is_open()) {
++        _setmode(_fileno(stdin), _O_BINARY);
++    }
+     std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
+     fst::script::Compile(istrm, FST_FLAGS_ifile,
+                              FST_FLAGS_ofile, "vector", "hist",
+diff --git a/src/test/ngraminfo_test.sh b/src/test/ngraminfo_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngrammake_test.sh b/src/test/ngrammake_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngrammarginalize_test.sh b/src/test/ngrammarginalize_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngrammerge_test.sh b/src/test/ngrammerge_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramperplexity_test.sh b/src/test/ngramperplexity_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramprint_test.sh b/src/test/ngramprint_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramrand_test.sh b/src/test/ngramrand_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramrandgen_test.sh b/src/test/ngramrandgen_test.sh
+old mode 100755
+new mode 100644
 diff --git a/src/test/ngramrandtest-main.cc b/src/test/ngramrandtest-main.cc
-index 7cd9945..1ee39fa 100644
+index 7cd9945..e480a37 100644
 --- a/src/test/ngramrandtest-main.cc
 +++ b/src/test/ngramrandtest-main.cc
-@@ -43,15 +43,15 @@
- #include <ngram/ngram-shrink.h>
- #include <ngram/ngram-witten-bell.h>
+@@ -22,6 +22,9 @@
+ #include <sstream>
+ #include <string>
+ #include <vector>
++#include <io.h>
++#include <fcntl.h>
++#include <iostream>
  
--DECLARE_int32(max_length);
--DECLARE_int32(seed);
--DECLARE_int32(vocabulary_max);
--DECLARE_int32(mean_length);
--DECLARE_int32(sample_max);
--DECLARE_int32(ngram_max);
--DECLARE_string(directory);
--DECLARE_string(vars);
--DECLARE_double(thresh_max);
-+DECLARE_EXE_int32(max_length);
-+DECLARE_EXE_int32(seed);
-+DECLARE_EXE_int32(vocabulary_max);
-+DECLARE_EXE_int32(mean_length);
-+DECLARE_EXE_int32(sample_max);
-+DECLARE_EXE_int32(ngram_max);
-+DECLARE_EXE_string(directory);
-+DECLARE_EXE_string(vars);
-+DECLARE_EXE_double(thresh_max);
+ #include <fst/extensions/far/far.h>
+ #include <fst/fst.h>
+@@ -212,13 +215,16 @@ int ngramrandtest_main(int argc, char **argv) {
  
- namespace {
+   std::ofstream varfstrm;
+   if (!FST_FLAGS_vars.empty()) {
+-    varfstrm.open(FST_FLAGS_vars);
++    varfstrm.open(FST_FLAGS_vars, std::ios_base::out | std::ios_base::binary);
+     if (!varfstrm) {
+       LOG(ERROR) << argv[0]
+                  << ": Open failed, file = " << FST_FLAGS_vars;
+       return 1;
+     }
+   }
++  if (!varfstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
+   std::ostream &varstrm = varfstrm.is_open() ? varfstrm : std::cout;
  
+   varstrm << "SEED=" << FST_FLAGS_seed << std::endl;
+@@ -228,7 +234,7 @@ int ngramrandtest_main(int argc, char **argv) {
+   std::string directory = directory_label(FST_FLAGS_seed,
+                                           FST_FLAGS_directory);
+   std::ofstream cntxfstrm;
+-  cntxfstrm.open(directory + "cntxs");
++  cntxfstrm.open(directory + "cntxs", std::ios_base::out | std::ios_base::binary);
+   if (!cntxfstrm) {
+     LOG(ERROR) << argv[0] << ": Open failed, file = " << directory << "cntxs";
+     return 1;
 diff --git a/src/test/ngramrandtest.cc b/src/test/ngramrandtest.cc
 index febcfb7..f2f89b2 100644
 --- a/src/test/ngramrandtest.cc
@@ -819,6 +911,12 @@ index febcfb7..f2f89b2 100644
  
  #include <fst/flags.h>
  
+diff --git a/src/test/ngramshrink_test.sh b/src/test/ngramshrink_test.sh
+old mode 100755
+new mode 100644
+diff --git a/src/test/ngramsymbols_test.sh b/src/test/ngramsymbols_test.sh
+old mode 100755
+new mode 100644
 -- 
 2.35.3
 
