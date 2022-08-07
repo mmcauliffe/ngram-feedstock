@@ -8,28 +8,42 @@ package:
 source:
   url: http://www.openfst.org/twiki/pub/GRM/NGramDownload/{{ name }}-{{ version }}.tar.gz
   sha256: 8af30f0f2e823ccd7b856093a0b395cd481c599884b76a6361e8b37812d89d87
+  patches:
+    - patches/0001-Add-CMake-files.patch  # [win]
 
 build:
-  number: 1
-  skip: true  # [win]
+  number: 2
 
 requirements:
   build:
     - {{ compiler('cxx') }}
-    - make
-    - gnuconfig   # [unix]
+    - make                    # [unix]
+    - gnuconfig               # [unix]
+    - cmake                   # [win]
+    - ninja                   # [win]
+    - m2-patch                # [win]
   host:
     - openfst ==1.8.2
+    - dlfcn-win32             # [win]
   run:
     - openfst ==1.8.2
+    - ucrt                    # [win]
+
+
+{% set ngram_binaries = [
+    "ngramapply", "ngramcontext", "ngramcount", "ngraminfo", "ngrammake", "ngrammarginalize", "ngrammerge",
+    "ngramperplexity", "ngramprint", "ngramrandgen", "ngramread", "ngramshrink", "ngramsort", "ngramsplit",
+    "ngramsymbols", "ngramtransfer"
+] %}
 
 test:
   commands:
-    - ngramcount --helpshort >/dev/null || [[ $? == 1 ]]
-    - ngraminfo --helpshort >/dev/null || [[ $? == 1 ]]
-    - ngrammake --helpshort >/dev/null || [[ $? == 1 ]]
-    - ngramshrink --helpshort >/dev/null || [[ $? == 1 ]]
-    - ngramsymbols --helpshort >/dev/null || [[ $? == 1 ]]
+    # binaries:
+    {% for each_bin in ngram_binaries %}
+      # If behaving properly these will have return code 1.
+      - {{ each_bin }} --helpshort >/dev/null || [[ $? == 1 ]]     # [unix]
+      - {{ each_bin }} --helpshort & if errorlevel 1 ( exit /b 0)  # [win]
+    {% endfor %}
 
 about:
   home: http://ngram.opengrm.org
@@ -43,3 +57,4 @@ about:
 extra:
   recipe-maintainers:
     - kylebgorman
+    - mmcauliffe
