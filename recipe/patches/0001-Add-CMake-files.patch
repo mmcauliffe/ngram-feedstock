@@ -1,111 +1,65 @@
-From 931bb6f2dea7141b5abf898391e752f8f1c4ca25 Mon Sep 17 00:00:00 2001
+From 4e2f674cb01151f1d4ff0367a461b139a3739a50 Mon Sep 17 00:00:00 2001
 From: Michael McAuliffe <michael.e.mcauliffe@gmail.com>
-Date: Sat, 16 Jul 2022 11:39:26 -0700
+Date: Sun, 7 Aug 2022 12:20:56 -0700
 Subject: [PATCH] Add CMake files
 
 ---
- .gitattributes                         | 18 +++++++
- CMakeLists.txt                         | 37 +++++++++++++++
- src/CMakeLists.txt                     | 11 +++++
- src/bin/CMakeLists.txt                 | 53 +++++++++++++++++++++
- src/bin/ngramapply-main.cc             |  1 +
- src/bin/ngramcount-main.cc             |  7 ++-
- src/bin/ngramdisttrain.sh              |  0
- src/bin/ngramfractrain.sh              |  0
- src/bin/ngraminfo-main.cc              |  8 +++-
- src/bin/ngramperplexity-main.cc        |  8 +++-
- src/bin/ngramprint-main.cc             |  8 +++-
- src/bin/ngramrandgen-main.cc           |  5 ++
- src/bin/ngramrandgen.cc                |  5 ++
- src/bin/ngramread-main.cc              | 18 +++++--
- src/bin/ngramread.cc                   |  4 +-
- src/bin/ngramshrink-main.cc            |  2 +-
- src/bin/ngramsymbols-main.cc           | 12 ++++-
- src/include/ngram/ngram-count.h        |  1 +
- src/include/ngram/ngram-output.h       |  5 ++
- src/include/ngram/ngram-randgen.h      |  5 ++
- src/lib/CMakeLists.txt                 | 65 ++++++++++++++++++++++++++
- src/lib/ngram-context.cc               | 13 +++++-
- src/lib/ngram-output.cc                |  3 --
- src/test/CMakeLists.txt                | 42 +++++++++++++++++
- src/test/disttestsetup.sh              |  0
- src/test/ngramapply_test.sh            |  0
- src/test/ngramcount_histograms_test.sh |  0
- src/test/ngramcount_test.sh            |  0
- src/test/ngramdistcount_test.sh        |  0
- src/test/ngramdistmake_test.sh         |  0
- src/test/ngramdistrand.sh              |  0
- src/test/ngramdistshrink_test.sh       |  0
- src/test/ngramdistwittenbell_test.sh   |  0
- src/test/ngramfracdistmake_test.sh     |  0
- src/test/ngramfracdistshrink_test.sh   |  0
- src/test/ngramhisttest-main.cc         |  8 +++-
- src/test/ngraminfo_test.sh             |  0
- src/test/ngrammake_test.sh             |  0
- src/test/ngrammarginalize_test.sh      |  0
- src/test/ngrammerge_test.sh            |  0
- src/test/ngramperplexity_test.sh       |  0
- src/test/ngramprint_test.sh            |  0
- src/test/ngramrand_test.sh             |  0
- src/test/ngramrandgen_test.sh          |  0
- src/test/ngramrandtest-main.cc         | 10 +++-
- src/test/ngramrandtest.cc              |  5 ++
- src/test/ngramshrink_test.sh           |  0
- src/test/ngramsymbols_test.sh          |  0
- 48 files changed, 332 insertions(+), 22 deletions(-)
+ .gitattributes                    | 18 +++++++++
+ CMakeLists.txt                    | 37 ++++++++++++++++++
+ src/CMakeLists.txt                | 11 ++++++
+ src/bin/CMakeLists.txt            | 53 +++++++++++++++++++++++++
+ src/bin/ngramapply-main.cc        |  1 +
+ src/bin/ngramcount-main.cc        |  7 +++-
+ src/bin/ngraminfo-main.cc         |  8 +++-
+ src/bin/ngramperplexity-main.cc   |  8 +++-
+ src/bin/ngramprint-main.cc        |  8 +++-
+ src/bin/ngramrandgen-main.cc      |  5 +++
+ src/bin/ngramrandgen.cc           |  5 +++
+ src/bin/ngramread-main.cc         | 18 ++++++---
+ src/bin/ngramread.cc              |  4 +-
+ src/bin/ngramshrink-main.cc       |  2 +-
+ src/bin/ngramsymbols-main.cc      | 12 +++++-
+ src/include/ngram/ngram-count.h   |  1 +
+ src/include/ngram/ngram-output.h  |  5 +++
+ src/include/ngram/ngram-randgen.h |  5 +++
+ src/lib/CMakeLists.txt            | 65 +++++++++++++++++++++++++++++++
+ src/lib/ngram-context.cc          | 13 ++++++-
+ src/lib/ngram-output.cc           |  3 --
+ src/test/CMakeLists.txt           | 42 ++++++++++++++++++++
+ src/test/ngramhisttest-main.cc    |  8 +++-
+ src/test/ngramrandtest-main.cc    | 10 ++++-
+ src/test/ngramrandtest.cc         |  5 +++
+ 25 files changed, 332 insertions(+), 22 deletions(-)
  create mode 100644 .gitattributes
  create mode 100644 CMakeLists.txt
  create mode 100644 src/CMakeLists.txt
  create mode 100644 src/bin/CMakeLists.txt
- mode change 100755 => 100644 src/bin/ngramdisttrain.sh
- mode change 100755 => 100644 src/bin/ngramfractrain.sh
  create mode 100644 src/lib/CMakeLists.txt
  create mode 100644 src/test/CMakeLists.txt
- mode change 100755 => 100644 src/test/disttestsetup.sh
- mode change 100755 => 100644 src/test/ngramapply_test.sh
- mode change 100755 => 100644 src/test/ngramcount_histograms_test.sh
- mode change 100755 => 100644 src/test/ngramcount_test.sh
- mode change 100755 => 100644 src/test/ngramdistcount_test.sh
- mode change 100755 => 100644 src/test/ngramdistmake_test.sh
- mode change 100755 => 100644 src/test/ngramdistrand.sh
- mode change 100755 => 100644 src/test/ngramdistshrink_test.sh
- mode change 100755 => 100644 src/test/ngramdistwittenbell_test.sh
- mode change 100755 => 100644 src/test/ngramfracdistmake_test.sh
- mode change 100755 => 100644 src/test/ngramfracdistshrink_test.sh
- mode change 100755 => 100644 src/test/ngraminfo_test.sh
- mode change 100755 => 100644 src/test/ngrammake_test.sh
- mode change 100755 => 100644 src/test/ngrammarginalize_test.sh
- mode change 100755 => 100644 src/test/ngrammerge_test.sh
- mode change 100755 => 100644 src/test/ngramperplexity_test.sh
- mode change 100755 => 100644 src/test/ngramprint_test.sh
- mode change 100755 => 100644 src/test/ngramrand_test.sh
- mode change 100755 => 100644 src/test/ngramrandgen_test.sh
- mode change 100755 => 100644 src/test/ngramshrink_test.sh
- mode change 100755 => 100644 src/test/ngramsymbols_test.sh
 
 diff --git a/.gitattributes b/.gitattributes
 new file mode 100644
-index 0000000..02a8638
+index 0000000..29985a1
 --- /dev/null
 +++ b/.gitattributes
 @@ -0,0 +1,18 @@
 +*.php text
-+        *.css text
-+        *.js text
-+        *.json text
-+        *.htm text
-+        *.html text
-+        *.xml text
-+        *.txt text
-+        *.pyx text
-+        *.inc text
-+        *.cpp text
-+        *.pxd text
-+        *.in text
-+        *.am text
-+        *.sh text
-+        *.h text
-+        *.cc text
++*.css text
++*.js text
++*.json text
++*.htm text
++*.html text
++*.xml text
++*.txt text
++*.pyx text
++*.inc text
++*.cpp text
++*.pxd text
++*.in text
++*.am text
++*.sh text
++*.h text
++*.cc text
 +
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 new file mode 100644
@@ -269,12 +223,6 @@ index 9a8010d..582a85b 100644
        std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
        for (size_t i = 0; i < ngram_counts.size(); ++i)
          ostrm << ngram_counts[i] << std::endl;
-diff --git a/src/bin/ngramdisttrain.sh b/src/bin/ngramdisttrain.sh
-old mode 100755
-new mode 100644
-diff --git a/src/bin/ngramfractrain.sh b/src/bin/ngramfractrain.sh
-old mode 100755
-new mode 100644
 diff --git a/src/bin/ngraminfo-main.cc b/src/bin/ngraminfo-main.cc
 index 5573f7d..64bad1d 100644
 --- a/src/bin/ngraminfo-main.cc
@@ -765,39 +713,6 @@ index 0000000..9342abe
 +endif()
 +add_test(NAME ngramrandtest-test COMMAND ngramrandtest)
 \ No newline at end of file
-diff --git a/src/test/disttestsetup.sh b/src/test/disttestsetup.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramapply_test.sh b/src/test/ngramapply_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramcount_histograms_test.sh b/src/test/ngramcount_histograms_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramcount_test.sh b/src/test/ngramcount_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramdistcount_test.sh b/src/test/ngramdistcount_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramdistmake_test.sh b/src/test/ngramdistmake_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramdistrand.sh b/src/test/ngramdistrand.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramdistshrink_test.sh b/src/test/ngramdistshrink_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramdistwittenbell_test.sh b/src/test/ngramdistwittenbell_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramfracdistmake_test.sh b/src/test/ngramfracdistmake_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramfracdistshrink_test.sh b/src/test/ngramfracdistshrink_test.sh
-old mode 100755
-new mode 100644
 diff --git a/src/test/ngramhisttest-main.cc b/src/test/ngramhisttest-main.cc
 index 51a006f..eb3f2d9 100644
 --- a/src/test/ngramhisttest-main.cc
@@ -829,30 +744,6 @@ index 51a006f..eb3f2d9 100644
      std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
      fst::script::Compile(istrm, FST_FLAGS_ifile,
                               FST_FLAGS_ofile, "vector", "hist",
-diff --git a/src/test/ngraminfo_test.sh b/src/test/ngraminfo_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngrammake_test.sh b/src/test/ngrammake_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngrammarginalize_test.sh b/src/test/ngrammarginalize_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngrammerge_test.sh b/src/test/ngrammerge_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramperplexity_test.sh b/src/test/ngramperplexity_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramprint_test.sh b/src/test/ngramprint_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramrand_test.sh b/src/test/ngramrand_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramrandgen_test.sh b/src/test/ngramrandgen_test.sh
-old mode 100755
-new mode 100644
 diff --git a/src/test/ngramrandtest-main.cc b/src/test/ngramrandtest-main.cc
 index 7cd9945..e480a37 100644
 --- a/src/test/ngramrandtest-main.cc
@@ -911,12 +802,6 @@ index febcfb7..f2f89b2 100644
  
  #include <fst/flags.h>
  
-diff --git a/src/test/ngramshrink_test.sh b/src/test/ngramshrink_test.sh
-old mode 100755
-new mode 100644
-diff --git a/src/test/ngramsymbols_test.sh b/src/test/ngramsymbols_test.sh
-old mode 100755
-new mode 100644
 -- 
-2.35.3
+2.37.1
 
