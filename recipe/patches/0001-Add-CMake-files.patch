@@ -1,10 +1,9 @@
-From 4e2f674cb01151f1d4ff0367a461b139a3739a50 Mon Sep 17 00:00:00 2001
+From 7a08ac819bb7d995467ba70e200bd74f0ff367c6 Mon Sep 17 00:00:00 2001
 From: Michael McAuliffe <michael.e.mcauliffe@gmail.com>
-Date: Sun, 7 Aug 2022 12:20:56 -0700
+Date: Sun, 7 Aug 2022 12:24:17 -0700
 Subject: [PATCH] Add CMake files
 
 ---
- .gitattributes                    | 18 +++++++++
  CMakeLists.txt                    | 37 ++++++++++++++++++
  src/CMakeLists.txt                | 11 ++++++
  src/bin/CMakeLists.txt            | 53 +++++++++++++++++++++++++
@@ -29,38 +28,13 @@ Subject: [PATCH] Add CMake files
  src/test/ngramhisttest-main.cc    |  8 +++-
  src/test/ngramrandtest-main.cc    | 10 ++++-
  src/test/ngramrandtest.cc         |  5 +++
- 25 files changed, 332 insertions(+), 22 deletions(-)
- create mode 100644 .gitattributes
+ 24 files changed, 314 insertions(+), 22 deletions(-)
  create mode 100644 CMakeLists.txt
  create mode 100644 src/CMakeLists.txt
  create mode 100644 src/bin/CMakeLists.txt
  create mode 100644 src/lib/CMakeLists.txt
  create mode 100644 src/test/CMakeLists.txt
 
-diff --git a/.gitattributes b/.gitattributes
-new file mode 100644
-index 0000000..29985a1
---- /dev/null
-+++ b/.gitattributes
-@@ -0,0 +1,18 @@
-+*.php text
-+*.css text
-+*.js text
-+*.json text
-+*.htm text
-+*.html text
-+*.xml text
-+*.txt text
-+*.pyx text
-+*.inc text
-+*.cpp text
-+*.pxd text
-+*.in text
-+*.am text
-+*.sh text
-+*.h text
-+*.cc text
-+
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 new file mode 100644
 index 0000000..29591c3
