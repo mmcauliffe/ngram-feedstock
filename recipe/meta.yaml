@@ -12,7 +12,7 @@ source:
     - patches/0001-Add-CMake-files.patch  # [win]
 
 build:
-  number: 0
+  number: 1
 
 requirements:
   build:

@@ -1,4 +1,4 @@
-From 83be7d4649cd23b8f6a9bfb17f0367f90414bcdb Mon Sep 17 00:00:00 2001
+From f31114c115e15d7d5a4ff33e2bf7248eb22898ef Mon Sep 17 00:00:00 2001
 From: Michael McAuliffe <michael.e.mcauliffe@gmail.com>
 Date: Fri, 26 Jan 2024 12:03:27 -0800
 Subject: [PATCH] Add CMake files
@@ -7,15 +7,23 @@ Subject: [PATCH] Add CMake files
  CMakeLists.txt                    | 37 ++++++++++++++++++
  src/CMakeLists.txt                | 11 ++++++
  src/bin/CMakeLists.txt            | 53 +++++++++++++++++++++++++
+ src/bin/ngramcount-main.cc        | 11 +++++-
+ src/bin/ngraminfo-main.cc         | 11 +++++-
+ src/bin/ngramperplexity-main.cc   | 11 +++++-
+ src/bin/ngramprint-main.cc        | 11 +++++-
  src/bin/ngramrandgen-main.cc      |  4 ++
  src/bin/ngramrandgen.cc           |  4 ++
+ src/bin/ngramread-main.cc         | 18 ++++++++-
  src/bin/ngramread.cc              |  4 +-
+ src/bin/ngramsymbols-main.cc      | 18 ++++++++-
  src/include/ngram/ngram-randgen.h |  4 ++
  src/lib/CMakeLists.txt            | 65 +++++++++++++++++++++++++++++++
+ src/lib/ngram-context.cc          | 18 ++++++++-
  src/lib/ngram-output.cc           |  5 ++-
  src/test/CMakeLists.txt           | 42 ++++++++++++++++++++
+ src/test/ngramhisttest-main.cc    |  9 +++++
  src/test/ngramrandtest.cc         |  4 ++
- 11 files changed, 229 insertions(+), 4 deletions(-)
+ 19 files changed, 326 insertions(+), 14 deletions(-)
  create mode 100644 CMakeLists.txt
  create mode 100644 src/CMakeLists.txt
  create mode 100644 src/bin/CMakeLists.txt
@@ -142,6 +150,142 @@ index 0000000..d11f3c1
 +add_executable2(ngramsymbols ngramsymbols-main.cc ngramsymbols.cc)
 +
 +add_executable2_hist(ngramtransfer ngramtransfer-main.cc ngramtransfer.cc)
+diff --git src/bin/ngramcount-main.cc src/bin/ngramcount-main.cc
+index 585322b..3cb1733 100644
+--- src/bin/ngramcount-main.cc
++++ src/bin/ngramcount-main.cc
+@@ -22,6 +22,10 @@
+ #include <ostream>
+ #include <string>
+ #include <vector>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/flags.h>
+ #include <fst/log.h>
+@@ -96,12 +100,17 @@ int ngramcount_main(int argc, char **argv) {
+           FST_FLAGS_add_to_symbol_unigram_count);
+       std::ofstream ofstrm;
+       if (!out_name.empty()) {
+-        ofstrm.open(out_name);
++        ofstrm.open(out_name, std::ios_base::out | std::ios_base::binary);
+         if (!ofstrm) {
+           LOG(ERROR) << "GetNGramCounts: Open failed, file = " << out_name;
+           return 1;
+         }
+       }
++      #ifdef _WIN32
++      if (!ofstrm.is_open()) {
++          _setmode(_fileno(stdout), _O_BINARY);
++      }
++      #endif
+       std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+       for (size_t i = 0; i < ngram_counts.size(); ++i)
+         ostrm << ngram_counts[i] << std::endl;
+diff --git src/bin/ngraminfo-main.cc src/bin/ngraminfo-main.cc
+index cf4108b..0784e27 100644
+--- src/bin/ngraminfo-main.cc
++++ src/bin/ngraminfo-main.cc
+@@ -24,6 +24,10 @@
+ #include <sstream>
+ #include <string>
+ #include <vector>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/flags.h>
+ #include <fst/arc.h>
+@@ -114,12 +118,17 @@ int ngraminfo_main(int argc, char **argv) {
+ 
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
+       return 1;
+     }
+   }
++  #ifdef _WIN32
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
++  #endif
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+   ngram::NGramModel<fst::StdArc> ngram(
+       *fst, 0, FST_FLAGS_norm_eps,
+diff --git src/bin/ngramperplexity-main.cc src/bin/ngramperplexity-main.cc
+index df1a323..3354aca 100644
+--- src/bin/ngramperplexity-main.cc
++++ src/bin/ngramperplexity-main.cc
+@@ -22,6 +22,10 @@
+ #include <ostream>
+ #include <string>
+ #include <vector>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/flags.h>
+ #include <fst/extensions/far/far.h>
+@@ -61,12 +65,17 @@ int ngramperplexity_main(int argc, char **argv) {
+ 
+   std::ofstream ofstrm;
+   if (argc > 3 && (strcmp(argv[3], "-") != 0)) {
+-    ofstrm.open(argv[3]);
++    ofstrm.open(argv[3], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[3];
+       return 1;
+     }
+   }
++  #ifdef _WIN32
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
++  #endif
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+ 
+   ngram::NGramOutput ngram(fst.get(), ostrm, 0, false,
+diff --git src/bin/ngramprint-main.cc src/bin/ngramprint-main.cc
+index 14c8543..5d22f63 100644
+--- src/bin/ngramprint-main.cc
++++ src/bin/ngramprint-main.cc
+@@ -21,6 +21,10 @@
+ #include <memory>
+ #include <ostream>
+ #include <string>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/flags.h>
+ #include <fst/mutable-fst.h>
+@@ -68,12 +72,17 @@ int ngramprint_main(int argc, char **argv) {
+ 
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed, file = " << argv[2];
+       return 1;
+     }
+   }
++  #ifdef _WIN32
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
++  #endif
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+ 
+   ngram::NGramOutput ngram(fst.get(), ostrm, FST_FLAGS_backoff_label,
 diff --git src/bin/ngramrandgen-main.cc src/bin/ngramrandgen-main.cc
 index cb88c3b..97e5c55 100644
 --- src/bin/ngramrandgen-main.cc
@@ -174,6 +318,56 @@ index f15836a..eafc427 100644
  
  #include <climits>
  #include <ctime>
+diff --git src/bin/ngramread-main.cc src/bin/ngramread-main.cc
+index ae6fa57..c653d14 100644
+--- src/bin/ngramread-main.cc
++++ src/bin/ngramread-main.cc
+@@ -21,6 +21,10 @@
+ #include <istream>
+ #include <ostream>
+ #include <string>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/flags.h>
+ #include <ngram/ngram-input.h>
+@@ -46,22 +50,32 @@ int ngramread_main(int argc, char **argv) {
+ 
+   std::ifstream ifstrm;
+   if (argc > 1 && (strcmp(argv[1], "-") != 0)) {
+-    ifstrm.open(argv[1]);
++    ifstrm.open(argv[1], std::ios_base::in | std::ios_base::binary);
+     if (!ifstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[1];
+       return 1;
+     }
+   }
++  #ifdef _WIN32
++  if (!ifstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
++  #endif
+   std::istream &istrm = ifstrm.is_open() ? ifstrm : std::cin;
+ 
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[2];
+       return 1;
+     }
+   }
++  #ifdef _WIN32
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
++  #endif
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+ 
+   ngram::NGramInput input(
 diff --git src/bin/ngramread.cc src/bin/ngramread.cc
 index e6f5d38..2167025 100644
 --- src/bin/ngramread.cc
@@ -189,6 +383,56 @@ index e6f5d38..2167025 100644
  
  int ngramread_main(int argc, char** argv);
  int main(int argc, char** argv) {
+diff --git src/bin/ngramsymbols-main.cc src/bin/ngramsymbols-main.cc
+index e8cf854..6f0fec3 100644
+--- src/bin/ngramsymbols-main.cc
++++ src/bin/ngramsymbols-main.cc
+@@ -21,6 +21,10 @@
+ #include <istream>
+ #include <ostream>
+ #include <string>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/flags.h>
+ #include <ngram/ngram-input.h>
+@@ -41,22 +45,32 @@ int ngramsymbols_main(int argc, char **argv) {
+ 
+   std::ifstream ifstrm;
+   if (argc > 1 && (strcmp(argv[1], "-") != 0)) {
+-    ifstrm.open(argv[1]);
++    ifstrm.open(argv[1], std::ios_base::in | std::ios_base::binary);
+     if (!ifstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[1];
+       return 1;
+     }
+   }
++  #ifdef _WIN32
++  if (!ifstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
++  #endif
+   std::istream &istrm = ifstrm.is_open() ? ifstrm : std::cin;
+ 
+   std::ofstream ofstrm;
+   if (argc > 2 && (strcmp(argv[2], "-") != 0)) {
+-    ofstrm.open(argv[2]);
++    ofstrm.open(argv[2], std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << argv[0] << ": Open failed: " << argv[2];
+       return 1;
+     }
+   }
++  #ifdef _WIN32
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
++  #endif
+   std::ostream &ostrm = ofstrm.is_open() ? ofstrm : std::cout;
+ 
+   ngram::NGramInput input(istrm, ostrm, /*symbols=*/"",
 diff --git src/include/ngram/ngram-randgen.h src/include/ngram/ngram-randgen.h
 index b5e7a42..076d6e5 100644
 --- src/include/ngram/ngram-randgen.h
@@ -277,6 +521,58 @@ index 0000000..2069108
 +RUNTIME DESTINATION bin
 +)
 \ No newline at end of file
+diff --git src/lib/ngram-context.cc src/lib/ngram-context.cc
+index a2fe8b7..aa5dbc7 100644
+--- src/lib/ngram-context.cc
++++ src/lib/ngram-context.cc
+@@ -28,6 +28,10 @@
+ #include <string>
+ #include <utility>
+ #include <vector>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/arc.h>
+ #include <fst/util.h>
+@@ -282,11 +286,16 @@ bool NGramReadContexts(const std::string &file,
+                        std::vector<std::string> *contexts) {
+   contexts->clear();
+   std::ifstream fstrm;
+-  fstrm.open(file);
++  fstrm.open(file, std::ios_base::in | std::ios_base::binary);
+   if (!fstrm) {
+     LOG(ERROR) << "NGramReadContexts: Can't open file: " << file;
+     return false;
+   }
++  #ifdef _WIN32
++  if (!fstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
++  #endif
+   std::istream &strm = fstrm.is_open() ? fstrm : std::cin;
+   std::string line;
+   while (std::getline(strm, line)) contexts->push_back(line);
+@@ -297,12 +306,17 @@ bool NGramWriteContexts(const std::string &file,
+                         const std::vector<std::string> &contexts) {
+   std::ofstream ofstrm;
+   if (!file.empty()) {
+-    ofstrm.open(file);
++    ofstrm.open(file, std::ios_base::out | std::ios_base::binary);
+     if (!ofstrm) {
+       LOG(ERROR) << "NGramWriteContexts: Can't create file: " << file;
+       return false;
+     }
+   }
++  #ifdef _WIN32
++  if (!ofstrm.is_open()) {
++      _setmode(_fileno(stdout), _O_BINARY);
++  }
++  #endif
+   std::ostream &strm = ofstrm.is_open() ? ofstrm : std::cout;
+   for (int i = 0; i < contexts.size(); ++i) strm << contexts[i] << std::endl;
+   return true;
 diff --git src/lib/ngram-output.cc src/lib/ngram-output.cc
 index be05bb6..3b224f9 100644
 --- src/lib/ngram-output.cc
@@ -343,6 +639,33 @@ index 0000000..9342abe
 +endif()
 +add_test(NAME ngramrandtest-test COMMAND ngramrandtest)
 \ No newline at end of file
+diff --git src/test/ngramhisttest-main.cc src/test/ngramhisttest-main.cc
+index 7ec62ab..f84405e 100644
+--- src/test/ngramhisttest-main.cc
++++ src/test/ngramhisttest-main.cc
+@@ -21,6 +21,10 @@
+ #include <istream>
+ #include <memory>
+ #include <string>
++#ifdef _WIN32
++#include <io.h>
++#include <fcntl.h>
++#endif
+ 
+ #include <fst/log.h>
+ #include <fst/symbol-table.h>
+@@ -78,6 +82,11 @@ int ngramhisttest_main(int argc, char **argv) {
+                  << ": Open failed, file = " << FST_FLAGS_ifile;
+       return 1;
+     }
++  #ifdef _WIN32
++  if (!fstrm.is_open()) {
++      _setmode(_fileno(stdin), _O_BINARY);
++  }
++  #endif
+     std::istream &istrm = fstrm.is_open() ? fstrm : std::cin;
+     fst::script::Compile(
+         istrm, FST_FLAGS_ifile, FST_FLAGS_ofile, "vector",
 diff --git src/test/ngramrandtest.cc src/test/ngramrandtest.cc
 index 93a5422..19a2d8b 100644
 --- src/test/ngramrandtest.cc
